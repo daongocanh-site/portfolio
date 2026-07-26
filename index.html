@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio – UX Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ── Amber & Slate palette ── */
+    --sand:    #FFFFFF;   /* page background                       */
+    --tan:     #F4F5F6;   /* secondary bg / alt sections (grey wash) */
+    --khaki:   #D8DCDF;   /* borders, dividers (grey)               */
+    --cobalt-lt:#FBE4B0;  /* amber tint bg                          */
+    --cobalt:  #F1B43E;   /* accent primary — amber                 */
+    --cobalt-dk:#B4791A;  /* amber hover / dark text on amber       */
+    --blush:   #ECEEF0;   /* slate tint bg (cards, tags)            */
+    --mauve:   #73808D;   /* accent secondary — slate               */
+    --mauve-dk:#4B5560;   /* slate text on tint bg                  */
+    --ink:     #101214;   /* headings / main text                   */
+    --muted:   #73808D;   /* body / secondary text                  */
+    --border:  rgba(16,18,20,0.08);
+    /* legacy aliases so existing vars still resolve */
+    --cream:   #FFFFFF;
+    --text:    #101214;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);font-size:16px;line-height:1.7;overflow-x:hidden}
+
+  /* ── NAV ── */
+  nav{position:sticky;top:0;z-index:220;background:rgba(249,246,239,0.95);backdrop-filter:blur(12px);border-bottom:2px solid var(--cobalt);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;height:64px}
+  .nav-logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);text-decoration:none;flex-shrink:0}
+  .nav-links{display:flex;gap:32px;list-style:none}
+  .nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .2s}
+  .nav-links a:hover{color:var(--text)}
+  /* Hamburger button — hidden on desktop */
+  .nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:4px;width:36px;height:36px}
+  .nav-hamburger span{display:block;height:2px;background:var(--ink);border-radius:2px;transition:transform .3s, opacity .3s, width .3s}
+  .nav-hamburger span:nth-child(3){width:60%}
+  /* Mobile drawer */
+  .nav-drawer{display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;background:#F4F5F6;z-index:210;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .3s;pointer-events:none;overflow:hidden}
+  .nav-drawer.open{opacity:1;pointer-events:all}
+  .nav-drawer a{font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);text-decoration:none;padding:12px 0;transition:color .2s}
+  .nav-drawer a:hover{color:var(--cobalt)}
+
+  /* ── SECTIONS ── */
+  section{padding:100px 5vw}
+  section:nth-child(even){background:var(--tan)}
+  .section-label{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  .section-title{font-family:'DM Serif Display',serif;font-size:clamp(32px,5vw,56px);line-height:1.15;letter-spacing:-.5px;margin-bottom:24px}
+
+  /* ── HERO ── */
+  #hero{min-height:56vh;display:flex;align-items:center;padding:120px 5vw 64px;position:relative;overflow:hidden}
+  .hero-blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45;pointer-events:none}
+  .blob1{width:min(500px,80vw);height:min(500px,80vw);background:var(--cobalt-lt);top:-100px;right:-80px}
+  .blob2{width:min(350px,60vw);height:min(350px,60vw);background:var(--blush);bottom:0;left:5%}
+  .blob3{width:min(250px,45vw);height:min(250px,45vw);background:var(--tan);top:30%;right:15%}
+  .hero-content{position:relative;z-index:1;max-width:750px;width:100%;margin:0 auto;text-align:center}
+  .hero-title{font-family:'DM Serif Display',serif;font-size:clamp(32px,5.5vw,64px);line-height:1.15;letter-spacing:-1px;margin-bottom:24px}
+  .hero-title em{font-style:italic;color:var(--cobalt)}
+  .hero-desc{font-size:clamp(16px,2.5vw,18px);color:var(--muted);max-width:520px;line-height:1.8;margin:0 auto 40px}
+  .hero-ctas{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+  .btn-primary{background:var(--ink);color:var(--sand);padding:14px 28px;border-radius:100px;font-size:15px;font-weight:500;text-decoration:none;transition:opacity .2s,transform .15s;white-space:nowrap}
+  .btn-primary:hover{opacity:.85;transform:translateY(-1px)}
+
+  /* ── ABOUT — 3 columns ── */
+  .about-grid{display:grid;grid-template-columns:1fr 0.85fr 1fr;gap:48px;align-items:start}
+  .about-photo {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: 24px;
+}
+  .about-text p{color:var(--muted);margin-bottom:16px}
+  .info-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .chip{padding:6px 14px;border-radius:100px;font-size:13px;font-weight:500;background:var(--cobalt-lt);color:var(--cobalt-dk)}
+  .chip.sky{background:var(--tan);color:#4B5560}
+  .chip.peach{background:var(--blush);color:var(--mauve-dk)}
+  .chip.lemon{background:var(--tan);color:#4B5560}
+
+  /* ── JOURNEY (horizontal timeline) ── */
+  .journey-track{display:flex;gap:32px;position:relative;padding-top:4px}
+  .journey-track::before{content:'';position:absolute;top:9px;left:0;right:0;height:1px;background:var(--khaki)}
+  .journey-item{flex:1;min-width:0;position:relative;padding-top:20px}
+  .journey-year{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .journey-role{font-weight:500;font-size:16px;margin-bottom:3px}
+  .journey-company{font-size:13px;color:var(--muted);margin-bottom:12px}
+  .journey-desc{font-size:13px;color:var(--muted);line-height:1.65}
+
+  /* ── APPROACH (vertical list, 3rd About column) ── */
+  .approach-label{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  .approach-vertical{display:flex;flex-direction:column;gap:28px}
+  .approach-item{padding-top:24px;border-top:1px solid var(--border)}
+  .approach-item:first-child{padding-top:0;border-top:none}
+  .approach-num{font-size:13px;color:var(--muted);margin-bottom:14px}
+  .approach-title{font-family:'DM Serif Display',serif;font-size:19px;margin-bottom:10px;line-height:1.3}
+  .approach-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+  /* ── SKILLS — minimal, no cards/icons ── */
+  .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px 32px}
+  .skill-card{padding-top:20px}
+  .skill-divider{height:1px;background:var(--khaki);margin-bottom:24px}
+  .skill-num{display:block;font-size:13px;font-weight:500;color:var(--cobalt);letter-spacing:.5px;margin-bottom:16px}
+  .skill-name{font-family:'DM Serif Display',serif;font-weight:400;margin-bottom:10px;font-size:18px;line-height:1.3}
+  .skill-tools{font-size:13px;color:var(--muted);line-height:1.65}
+
+  /* ── PROJECTS — 5 cards ── */
+  .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .project-card{background:white;border:1px solid var(--border);border-radius:24px;overflow:hidden;transition:transform .25s,box-shadow .25s;cursor:pointer}
+  .project-card:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,0,0,.08)}
+  .project-thumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden}
+  .project-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(0,0,0,.05))}
+  .project-body{padding:24px}
+  .project-title{font-family:'DM Serif Display',serif;font-size:19px;margin-bottom:18px;line-height:1.35}
+  .project-meta{display:flex;justify-content:space-between;align-items:center}
+  .project-duration{font-size:12px;color:var(--muted)}
+  .project-arrow{width:36px;height:36px;border-radius:50%;background:var(--tan);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .2s,color .2s;flex-shrink:0}
+  .project-card:hover .project-arrow{background:var(--cobalt);color:white}
+
+  /* ── FAQ ── */
+  .faq-list{max-width:680px}
+  .faq-item{border-bottom:1px solid var(--border)}
+  .faq-question{display:flex;justify-content:space-between;align-items:center;padding:24px 0;cursor:pointer;font-weight:500;font-size:16px;transition:color .2s;gap:16px}
+  .faq-question:hover{color:var(--cobalt)}
+  .faq-icon{font-size:20px;transition:transform .3s;color:var(--muted);flex-shrink:0}
+  .faq-item.open .faq-icon{transform:rotate(45deg)}
+  .faq-answer{font-size:15px;color:var(--muted);line-height:1.8;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease}
+  .faq-item.open .faq-answer{max-height:300px;padding-bottom:24px}
+
+  /* ── CONTACT / FOOTER ── */
+  #contact{background:var(--cobalt-lt)}
+  .footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:60px;align-items:start;max-width:1200px}
+  .footer-name{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:16px;color:var(--ink)}
+  .footer-tagline{color:var(--muted);font-size:14px;line-height:1.75;max-width:320px}
+  .footer-label{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:22px}
+  .footer-links{display:flex;flex-direction:column;gap:14px}
+  .footer-links a{font-size:14px;color:var(--ink);text-decoration:none;transition:color .2s}
+  .footer-links a:hover{color:var(--cobalt-dk)}
+  .footer-divider{height:1px;background:var(--border);margin:64px 0 24px}
+  .footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);max-width:1200px}
+
+  /* ── CASE STUDY PAGE ── */
+  #cs-page{display:none;position:fixed;inset:0;z-index:300;background:var(--sand);overflow-y:auto;opacity:0;transform:translateY(40px);transition:opacity .4s ease,transform .4s ease}
+  #cs-page.visible{opacity:1;transform:translateY(0)}
+  .cs-nav{position:sticky;top:0;z-index:10;background:rgba(249,246,239,.95);backdrop-filter:blur(12px);border-bottom:2px solid var(--cobalt);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;height:64px;gap:16px}
+  .cs-back{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:inherit;transition:color .2s;padding:0;flex-shrink:0;white-space:nowrap}
+  .cs-back:hover{color:var(--text)}
+  #cs-nav-title{font-family:'DM Serif Display',serif;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+  .cs-hero{height:190px;display:flex;align-items:center;justify-content:center;font-size:52px}
+  .cs-body{max-width:1200px;margin:0 auto;padding:0 5vw 100px}
+  .cs-header{padding-top:56px;margin-bottom:40px;max-width:700px;margin-left:auto;margin-right:auto}
+  .cs-eyebrow{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  .cs-meta-row{display:flex;flex-wrap:wrap;gap:36px;padding:24px 0;margin:0 auto 56px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);max-width:700px}
+  .cs-meta-block .cs-meta-label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px}
+  .cs-meta-block .cs-meta-value{font-size:14px;color:var(--ink);line-height:1.6}
+  .cs-section{margin-bottom:56px}
+  .cs-section-title{font-family:'DM Serif Display',serif;font-size:26px;margin:0 auto 20px;max-width:700px}
+  .cs-text{color:var(--muted);line-height:1.85;margin:0 auto 16px;max-width:700px;font-size:15.5px}
+  .cs-highlight{background:white;border:1px solid var(--border);border-left:3px solid var(--cobalt);border-radius:0 12px 12px 0;padding:22px 26px;margin:24px auto;max-width:700px}
+  .cs-highlight p{color:var(--text);font-size:16px;line-height:1.7;font-style:italic;margin:0}
+  .cs-step{padding:32px 0;border-top:1px solid var(--border)}
+  .cs-step:first-child{padding-top:0;border-top:none}
+  .cs-group-title{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink);margin-bottom:20px}
+  .cs-step-num{display:block;font-size:13px;font-weight:500;color:var(--cobalt-dk);letter-spacing:.5px;margin:0 auto 12px;max-width:700px}
+  .cs-step-title{font-family:'DM Serif Display',serif;font-size:19px;margin:0 auto 10px;line-height:1.35;max-width:700px}
+  .cs-step-desc{font-size:15px;color:var(--muted);line-height:1.8;max-width:700px;margin-left:auto;margin-right:auto}
+  .cs-outcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px auto 0;max-width:700px}
+  .cs-outcome-card{border-top:2px solid var(--cobalt);padding:18px 0 0}
+  .cs-outcome-num{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:6px;line-height:1.2}
+  .cs-outcome-label{font-size:13px;color:var(--muted);line-height:1.5}
+  .cs-img-placeholder{border-radius:16px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;height:220px;border:2px dashed var(--border);color:var(--muted);font-size:13px;text-align:center;padding:16px}
+  .cs-img-placeholder span{font-size:28px}
+  .cs-single-img{width:100%;border-radius:16px;margin-top:20px;display:block}
+  .cs-single-img-narrow{max-width:700px;margin-left:auto;margin-right:auto}
+  .cs-compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+  .cs-compare-item img{width:100%;border-radius:16px;display:block}
+  .cs-compare-caption{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:10px}
+  .cs-stack{display:flex;flex-direction:column;gap:32px;margin-top:20px}
+  .cs-stack-item img{width:100%;border-radius:16px;display:block}
+  .cs-stack-item-narrow{max-width:520px;margin-left:auto;margin-right:auto}
+  .cs-next{background:var(--tan);border-radius:24px;padding:36px;text-align:center;margin-top:60px}
+  .cs-next-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+  .cs-next-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:20px;line-height:1.3}
+  .cs-next-btn{display:inline-flex;align-items:center;gap:8px;background:var(--cobalt);color:white;padding:12px 24px;border-radius:100px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:opacity .2s}
+  .cs-next-btn:hover{opacity:.85}
+
+  /* ════════════════════════════════════
+     RESPONSIVE BREAKPOINTS
+  ════════════════════════════════════ */
+
+  /* Tablet — 1024px */
+  @media(max-width:1024px){
+    .projects-grid{grid-template-columns:repeat(2,1fr)}
+  }
+
+  /* Tablet portrait — 768px */
+  @media(max-width:768px){
+    section{padding:72px 6vw}
+    .about-grid{grid-template-columns:1fr;gap:36px}
+    .about-photo-placeholder{aspect-ratio:3/2;max-height:260px}
+    .skills-grid{grid-template-columns:repeat(2,1fr)}
+    .projects-grid{grid-template-columns:repeat(2,1fr);gap:20px}
+    .cs-meta-row{gap:24px}
+    .cs-outcome-grid{grid-template-columns:repeat(3,1fr)}
+    .journey-track{flex-wrap:wrap;row-gap:32px}
+    .journey-track::before{display:none}
+    .journey-item{flex:0 0 calc(50% - 16px);padding-top:20px;border-top:1px solid var(--khaki)}
+  }
+
+  /* Mobile — 600px: hamburger kicks in */
+  @media(max-width:600px){
+    /* Nav */
+    .nav-links{display:none}
+    .nav-hamburger{display:flex}
+    nav{padding:0 20px}
+
+    /* Hero */
+    section{padding:60px 5vw}
+    #hero{padding:60px 5vw;min-height:auto}
+    .hero-title{font-size:clamp(36px,11vw,56px)}
+    .hero-desc{font-size:16px}
+    .hero-ctas{flex-direction:column;gap:12px}
+    .btn-primary{text-align:center;justify-content:center}
+
+    /* About */
+    .about-photo-placeholder{aspect-ratio:4/3;max-height:220px;font-size:12px}
+
+    /* Journey */
+    .journey-item{flex:0 0 100%}
+
+    /* Skills */
+    .skills-grid{grid-template-columns:1fr 1fr;gap:28px}
+    .skill-name{font-size:16px}
+    .skill-tools{font-size:12px}
+
+    /* Projects */
+    .projects-grid{grid-template-columns:1fr;gap:16px}
+    .project-thumb{height:110px;font-size:32px}
+
+    /* Contact / Footer */
+    .footer-grid{grid-template-columns:1fr;gap:40px}
+    .footer-bottom{flex-direction:column;gap:8px}
+
+    /* Case study page */
+    .cs-nav{padding:0 20px}
+    #cs-nav-title{font-size:13px}
+    .cs-hero{height:130px;font-size:36px}
+    .cs-body{padding:0 5vw 80px}
+    .cs-header{padding-top:40px;margin-bottom:40px}
+    .cs-meta-row{flex-direction:column;gap:20px}
+    .cs-compare{grid-template-columns:1fr!important;gap:16px}
+    .cs-outcome-grid{grid-template-columns:1fr 1fr}
+    .cs-outcome-card:last-child{grid-column:1/-1}
+    .cs-outcome-num{font-size:28px}
+    .cs-section-title{font-size:22px}
+    .cs-next{padding:28px 20px}
+    .cs-next-title{font-size:18px}
+
+    /* FAQ */
+    .faq-question{font-size:15px}
+  }
+
+  /* Very small — 380px */
+  @media(max-width:380px){
+    .hero-title{font-size:34px}
+    .skills-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div id="main-portfolio">
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#hero">Dao Ngoc Anh</a>
+  <ul class="nav-links">
+    <li><a href="#work">Projects</a></li>
+    <li><a href="#about">About me</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu" onclick="toggleMenu()">
+    <span id="hb1"></span><span id="hb2"></span><span id="hb3"></span>
+  </button>
+</nav>
+
+<!-- Mobile drawer -->
+<nav class="nav-drawer" id="nav-drawer">
+  <a href="#work" onclick="closeMenu()">Projects</a>
+  <a href="#about" onclick="closeMenu()">About me</a>
+  <a href="#faq" onclick="closeMenu()">FAQ</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-blob blob1"></div><div class="hero-blob blob2"></div><div class="hero-blob blob3"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">Bonjour, I'm <em>Ngoc Anh 👩🏻‍💻</em></h1>
+    <p class="hero-desc">UX/UI Designer with digital marketing background crafting digital experiences that are clear, accessible and meaningful to users.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#work">View my recent works ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section id="work">
+  <div class="section-label">Selected works</div>
+  <h2 class="section-title" style="margin-bottom:48px">Projects</h2>
+  <div class="projects-grid">
+    <div class="project-card" onclick="openCase(0)">
+      <div class="project-thumb" style="background:linear-gradient(135deg,#FBE4B0,#ECEEF0)">🔍</div>
+      <div class="project-body">
+        <h3 class="project-title">Redesigning a broken search experience for public service users</h3>
+        <div class="project-meta"><span class="project-duration">UX/UI Design · Web Searching Optimisation</span><div class="project-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openCase(1)">
+      <div class="project-thumb" style="background:linear-gradient(135deg,#E1E4E7,#FBE4B0)">📨</div>
+      <div class="project-body">
+        <h3 class="project-title">Rethinking a government messaging experience</h3>
+        <div class="project-meta"><span class="project-duration">UX/UI Design · Mails</span><div class="project-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openCase(2)">
+      <div class="project-thumb" style="background:linear-gradient(135deg,#ECEEF0,#E1E4E7)">🧩</div>
+      <div class="project-body">
+        <h3 class="project-title">Design system: building &amp; managing shared components</h3>
+        <div class="project-meta"><span class="project-duration">UX/UI Design · Components · Variants</span><div class="project-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openCase(3)">
+      <div class="project-thumb" style="background:linear-gradient(135deg,#FBE4B0,#D8DCDF)">🎙️</div>
+      <div class="project-body">
+        <h3 class="project-title">Improving online administrative applications through real users</h3>
+        <div class="project-meta"><span class="project-duration">UX Research · User Interview</span><div class="project-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openCase(4)">
+      <div class="project-thumb" style="background:linear-gradient(135deg,#ECEEF0,#FBE4B0)">✍️</div>
+      <div class="project-body">
+        <h3 class="project-title">Coc Coc Browser: UX copy that guides users</h3>
+        <div class="project-meta"><span class="project-duration">UX Writing · Onboarding · Modals</span><div class="project-arrow">→</div></div>
+      </div>
+    </div>
+    <div class="project-card" onclick="openCase(5)">
+      <div class="project-thumb" style="background:linear-gradient(135deg,#D8DCDF,#ECEEF0)">🎨</div>
+      <div class="project-body">
+        <h3 class="project-title">UI, graphic &amp; social media design</h3>
+        <div class="project-meta"><span class="project-duration">Banners · Posters · Visual Elements</span><div class="project-arrow">→</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About me</div>
+  <div class="about-grid">
+    <div class="about-text">
+      <h2 class="section-title" style="font-size:clamp(24px,3vw,36px)">I design to<br>solves real problems for real people.</h2>
+      <p>I'm Ngoc Anh, a UX/UI Designer based in France. I have worked with organisations — from start-up to established public institution — and bring a strategic and cross-functional vision to the design of digital experiences.</p>
+    </div>
+    <img src="avatar.jpeg" alt="About Photo" class="about-photo">
+    <div class="approach-col">
+      <div class="approach-label">My approach</div>
+      <div class="approach-vertical">
+        <div class="approach-item">
+          <div class="approach-num">01</div>
+          <div class="approach-title">Clarity over complexity</div>
+          <div class="approach-desc">The best solutions are often the simplest. I focus on what matters, turning it properly functional.</div>
+        </div>
+        <div class="approach-item">
+          <div class="approach-num">02</div>
+          <div class="approach-title">Strategy before aesthetics</div>
+          <div class="approach-desc">Beautiful design without purpose is decoration. Every visual decision is grounded in strategic works from discovery to hypothesis validation.</div>
+        </div>
+        <div class="approach-item">
+          <div class="approach-num">03</div>
+          <div class="approach-title">Long-term thinking</div>
+          <div class="approach-desc">I create systems designed to evolve. Products built on strong foundations adapt and grow with their users.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN & ME -->
+<section id="experience">
+  <div class="section-label">Design &amp; me</div>
+
+  <h2 class="section-title" style="font-size:clamp(24px,3.2vw,34px);margin-bottom:40px">My journey</h2>
+  <div class="journey-track">
+    <div class="journey-item">
+      <div class="journey-year">2024 – Present</div>
+      <div class="journey-role" style="color:var(--cobalt)">UX/UI Designer</div>
+      <div class="journey-company">France Titres</div>
+      <div class="journey-desc">Optimising responsive websites for national identity documents procedures.</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2023 – 2024</div>
+      <div class="journey-role">UX Specialist</div>
+      <div class="journey-company">Viettel Digital (VDS)</div>
+      <div class="journey-desc">Ameliorated user experiences in-app through restructuring information architecture and crafting UX copy.</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2022 – 2023</div>
+      <div class="journey-role" style="color:var(--cobalt)">UX Writer</div>
+      <div class="journey-company">Coc Coc Browser</div>
+      <div class="journey-desc">Shaped microcopy and content strategy for a widely-used browser.</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2014 – 2021</div>
+      <div class="journey-role">Digital Marketing Executive</div>
+      <div class="journey-company">_doanviet_ (Instagram)</div>
+      <div class="journey-desc">Built and grew an engaged community through content strategy and storytelling.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Services</div>
+  <h2 class="section-title" style="margin-bottom:40px">What I offer</h2>
+  <div class="skills-grid">
+    <div class="skill-card"><div class="skill-divider"></div><span class="skill-num">01</span><div class="skill-name">UX/UI Design</div><div class="skill-tools">Design from A to Z that ensures user experiences ergonomic, accessible and smooth in Figma.</div></div>
+    <div class="skill-card"><div class="skill-divider"></div><span class="skill-num">02</span><div class="skill-name">UX Research</div><div class="skill-tools">A system-thinking strategy from user understanding to design's validation through users or A/B testing.</div></div>
+    <div class="skill-card"><div class="skill-divider"></div><span class="skill-num">03</span><div class="skill-name">Design System</div><div class="skill-tools">Establish an all-in-one style guide including visual components (&amp; variants), content, and concept for digital communication assets.</div></div>
+    <div class="skill-card"><div class="skill-divider"></div><span class="skill-num">04</span><div class="skill-name">Content &amp; SEO</div><div class="skill-tools">Crafting contents in multi-channels (app interfaces, long or short form blogs, social media).</div></div>
+    <div class="skill-card"><div class="skill-divider"></div><span class="skill-num">05</span><div class="skill-name">Web Analytics &amp; Optimisation</div><div class="skill-tools">Quantitative and qualitative analysis based on data collected from Google Analytics, Google Tag Manager and Clarity (Hotjar).</div></div>
+    <div class="skill-card"><div class="skill-divider"></div><span class="skill-num">06</span><div class="skill-name">Tech</div><div class="skill-tools">HTML, CSS and JavaScript that enables better collaboration with stakeholders, plus AI prompt engineering and vibecoding for quicker and wiser design solutions.</div></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-label">FAQ</div>
+  <h2 class="section-title" style="margin-bottom:48px">Frequently asked questions</h2>
+  <div class="faq-list">
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">What is my "personal touch" in a team ?<span class="faq-icon">+</span></div><div class="faq-answer">The quiet force. Introverted and a Cancer at heart, I am the one who observes in silence to better understand. My strength lies in this blend of gentleness and tenacity: I don't seek to take up all the space, but I never let go of anything. With genuine kindness and an ambition that makes no compromises on quality, I make sure the project always moves toward a solution that makes sense.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">What is my "recipe" for a successful product ?<span class="faq-icon">+</span></div><div class="faq-answer">A good dose of listening, a pinch of data, and a solid understanding of business challenges. Designing means knowing how to innovate within constraints. I rely on close, iterative collaboration between design and tech to nurture an ongoing conversation with the user and turn ambitious visions into real solutions.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">What makes me passionate about design ?<span class="faq-icon">+</span></div><div class="faq-answer">It's the moment when complexity becomes clarity. Whether through a well-chosen word (UX Writing) or an intuitive interface, I love creating that feeling of 'ease' for the user. My attention to detail hides in the things no one sees, but everyone feels.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Do you know how to code ?<span class="faq-icon">+</span></div><div class="faq-answer">I have a solid understanding of HTML/CSS and JavaScript. This helps me communicate more effectively with developpers and design things that are actually feasible to build.</div></div>
+    <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Where can you work ?<span class="faq-icon">+</span></div><div class="faq-answer">I'm open to relocate in France if it's necessary. The question depends on who I work with and what missions I'm responsible for.</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-name">Ngoc Anh</div>
+      <p class="footer-tagline">UX/UI designer crafting digital experiences that are clear, accessible and meaningful.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Navigation</div>
+      <div class="footer-links">
+        <a href="#work">Projects</a>
+        <a href="#about">About me</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-label">Connect</div>
+      <div class="footer-links">
+        <a href="mailto:ngocanhh1507@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/ngoc-anh-dao/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-divider"></div>
+  <div class="footer-bottom">
+    <div>© 2026 Ngoc Anh. All rights reserved.</div>
+    <div>France</div>
+  </div>
+</section>
+</div><!-- /#main-portfolio -->
+
+<!-- CASE STUDY DETAIL PAGE -->
+<div id="cs-page">
+  <div class="cs-nav">
+    <button class="cs-back" onclick="closeCase()">← Back</button>
+    <div id="cs-nav-title"></div>
+  </div>
+  <div class="cs-hero" id="cs-hero"></div>
+  <div class="cs-body">
+    <div class="cs-header">
+      <div class="cs-eyebrow">Overview</div>
+      <h1 id="cs-title" style="font-family:'DM Serif Display',serif;font-size:clamp(28px,4.5vw,44px);line-height:1.15;letter-spacing:-.5px;margin-bottom:14px"></h1>
+      <p id="cs-subtitle" style="font-size:clamp(15px,2.2vw,18px);color:var(--muted);line-height:1.6"></p>
+    </div>
+    <div class="cs-meta-row" id="cs-meta"></div>
+    <div class="cs-main">
+      <div class="cs-section">
+        <h2 class="cs-section-title" id="cs-context-title">Context &amp; Problem</h2>
+        <p class="cs-text" id="cs-context"></p>
+        <!-- User journey block — shown only when data has userJourney, otherwise falls back to problem quote -->
+        <div id="cs-journey-block" style="display:none;margin-top:24px">
+          <div id="cs-journey-photo"></div>
+          <p class="cs-text" id="cs-journey-text" style="margin-top:16px"></p>
+          <div id="cs-user-quotes" class="cs-highlight" style="display:none"></div>
+        </div>
+        <div id="cs-problem-block" class="cs-highlight" style="display:none"><p id="cs-problem"></p></div>
+      </div>
+      <div class="cs-section">
+        <h2 class="cs-section-title" id="cs-process-title">Process</h2>
+        <div id="cs-process"></div>
+      </div>
+      <div class="cs-section" id="cs-outcomes-section">
+        <h2 class="cs-section-title">Outcomes</h2>
+        <p class="cs-text" id="cs-result-text"></p>
+        <div class="cs-outcome-grid" id="cs-outcomes"></div>
+      </div>
+      <div class="cs-section" id="cs-learnings-section" style="margin-bottom:0">
+        <h2 class="cs-section-title">Key Learnings</h2>
+        <div id="cs-learnings"></div>
+      </div>
+    </div>
+    <div class="cs-next">
+      <div class="cs-next-label">Next project</div>
+      <div class="cs-next-title" id="cs-next-title"></div>
+      <button class="cs-next-btn" id="cs-next-btn">View case study →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── HAMBURGER ── */
+let menuOpen=false;
+function toggleMenu(){
+  menuOpen=!menuOpen;
+  const drawer=document.getElementById('nav-drawer');
+  const hb1=document.getElementById('hb1'),hb2=document.getElementById('hb2'),hb3=document.getElementById('hb3');
+  if(menuOpen){
+    drawer.style.display='flex';
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        drawer.classList.add('open');
+      });
+    });
+    document.body.style.overflow='hidden';
+    hb1.style.transform='translateY(7px) rotate(45deg)';
+    hb2.style.opacity='0';
+    hb3.style.transform='translateY(-7px) rotate(-45deg)';
+    hb3.style.width='100%';
+  } else {
+    drawer.classList.remove('open');
+    document.body.style.overflow='';
+    hb1.style.transform='none';
+    hb2.style.opacity='1';
+    hb3.style.transform='none';
+    hb3.style.width='60%';
+    setTimeout(function(){ drawer.style.display='none'; }, 320);
+  }
+}
+function closeMenu(){
+  if(menuOpen)toggleMenu();
+}
+
+/* ── CASE STUDIES DATA ── */
+const cases=[
+  {emoji:'🔍',bg:'linear-gradient(135deg,#FBE4B0,#ECEEF0)',
+   title:'Redesigning a broken search experience for public service users',
+   subtitle:'Simplifying the mairie appointment search journey so citizens can actually reach their results.',
+   meta:[{l:'Year',v:'2026'},{l:'Role',v:'UX/UI Designer'},{l:'Tools',v:'Figma'},{l:'Reading time',v:'4 minutes'}],
+   context:'During user interviews with over 20 participants, approximately 80% got stuck during the search phase and never reached the results page. If users can\'t book an appointment, they can\'t finish their application — this prompted a full redesign of the mairie appointment booking search experience.',
+   userJourneyPhoto:'photos/user-journey.png',
+   process:[
+     {n:'01',t:'UX Audit — Identifying Friction Points',d:'Starting from the live interface, I identified three core usability issues:',bullets:['Unclear input behaviour — The postcode field requires selecting an item from a dropdown list to be valid, but this was not communicated. The "Search" button stayed greyed out even after users filled in all fields, leaving them stuck with no feedback on why.','Hidden information — The "More criteria" section was collapsed by default. Most users never clicked it, making its contents redundant and invisible.','Oversized search banner — On smaller laptops, the banner fills the entire screen. Users expected results to appear within the banner itself and never scrolled down to find them.'],compare:[{src:'photos/grey-button.png',caption:'Unclear input behaviour'},{src:'photos/more-criteria-closed.png',caption:'Hidden information'},{src:'photos/full-banner.png',caption:'Oversized search banner'}]},
+     {n:'02',t:'Ideation',d:'I drew inspiration from well-established search patterns in the travel and accommodation industry — Skyscanner, Airbnb, and Booking.com — as these platforms have tackled similar challenges around multi-criteria search. Their strengths lie in grouping related information, clearly surfacing all options, and establishing a visual hierarchy of criteria.',compare:[{src:'photos/skyscanner-example.png',caption:'Skyscanner'},{src:'photos/airbnb-example.png',caption:'Airbnb'},{src:'photos/booking-example.png',caption:'Booking.com'}]},
+     {n:'03',t:'Design & Iteration',d:'My goals were to:',bullets:['Reduce the visual footprint of the search banner','Restructure and simplify the search interaction','Surface all relevant information upfront','Produce a layout that is more hierarchical, readable, and accessible'],versionNote:'The first iteration (Version 1) reduced banner size and restructured the fields with clearer labels. Design review surfaced three issues: information overload from too many competing elements, ambiguity around which blue text was actually clickable, and accessibility problems with the modals that appeared after clicking items.<br><br>Version 2 addressed all three by simplifying the visual hierarchy, clarifying interactive affordances, and resolving the modal accessibility issues.',compare:[{src:'photos/v1-design.png',caption:'Version 1'},{src:'photos/v2-design.png',caption:'Version 2'}],compare2:[{src:'photos/v1-design-clicked.png',caption:'Version 1 — Item clicked'},{src:'photos/v2-design-clicked.png',caption:'Version 2 — Item clicked'}]}],
+   outcomes:[{n:'All-in-one layout',l:'Consolidates all needed information, reducing user clicks'},{n:'2 frictions removed',l:'Visual and accessibility issues resolved'}],
+   learnings:['Accessibility starts with clarity — A greyed-out button with no explanation is a dead end, especially for users who are less confident with digital tools. Clear error states and inline guidance are not optional extras; they are core to usability.','Don\'t hide information behind progressive disclosure unless it\'s truly secondary — If users need certain criteria to complete their task, those criteria should be visible by default.','Scroll isn\'t intuitive when above-the-fold content looks complete — If the search banner fills the viewport, users will assume results appear within it. Layout and visual flow need to guide attention downward.','Industry patterns are a useful starting point — Established patterns from travel and hospitality UX exist for a reason. Adapting them to a public service context can significantly reduce the design time needed to solve complex search problems.','Design reviews catch blindspots early — Feedback on information overload and unclear affordances in V1 prevented those issues from reaching users, reinforcing the value of structured critique in the process.']},
+
+  {emoji:'📨',bg:'linear-gradient(135deg,#E1E4E7,#FBE4B0)',
+   title:'Rethinking a government messaging experience',
+   subtitle:'Turning a simple multi-select request into a full redesign of France Titres\' in-account messaging.',
+   meta:[{l:'Year',v:'2025'},{l:'Role',v:'UX/UI Designer'},{l:'Tools',v:'Figma'},{l:'Reading time',v:'5 min'}],
+   context:'France Titres is a national agency supporting citizens in online procedures related to vehicle registration, driving licences, and identity documents. Its Messaging feature, embedded in each user account, is the main communication channel between the agency and its users.<br><br>The starting point was a clear product request: allow users to select multiple messages to archive or delete them faster. But the audit revealed three underlying issues that went beyond the initial ask in terms of navigation, content and layout.<br><br>The scope expanded from a single feature addition to a full redesign of the messaging experience.',
+   userJourneyPhoto:'photos/messaging-existing-interface.png',
+   process:[
+     {n:'01',t:'UX & Accessibility Audit',d:'I evaluated the existing interface across three dimensions — navigation, content, and interface design — which revealed weak layout hierarchy, missing accessibility standards, poor responsive behaviour, and content that failed to guide users.',compare:[{src:'photos/messaging-audit-1.png',caption:'Audit — Navigation'},{src:'photos/messaging-audit-2.png',caption:'Audit — Weak Accessibility'}],compare2:[{src:'photos/messaging-audit-3.png',caption:'Audit — Interface'},{src:'photos/messaging-audit-4.png',caption:'Audit — Mobile non responsive'}]},
+     {n:'02',t:'Competitive Benchmarking',d:'I reviewed three categories of reference: dedicated messaging platforms (Gmail, Outlook), platforms with an embedded messaging space (Vinted), and notification-style experiences on web and mobile — to identify patterns that could translate into a government service context.'},
+     {n:'03',t:'Redesign Proposal',d:'Working within the existing design system, I proposed four key additions:',bullets:['A search and filter bar','A timeline indicator showing messages from the last 30, 60, and 80 days before automatic deletion','Message grouping by associated procedure','Multi-selection for bulk actions — archive, restore, delete']},
+     {n:'04',t:'Delivery & Iteration',d:'I delivered high-fidelity wireframes and an interactive prototype, with iteration built into every phase rather than treated as a final step. The final UI was designed at 1440px for desktop and 320px for mobile.',compare:[{src:'photos/messaging-final-desktop.png',caption:'Final UI — Desktop, 1440px'},{src:'photos/messaging-final-mobile.png',caption:'Final UI — Mobile, 320px'}],compareRatio:[3,1]}],
+   outcomes:[{n:'Grouped & labeled',l:'Messages grouped by procedure with distinct labels, enabling a quick scan'},{n:'Search + filter',l:'Faster access to relevant messages without scrolling the full inbox'},{n:'30/60/80-day alerts',l:'Timeline indicator gives in-time warning before automatic deletion'},{n:'Bulk actions',l:'Multi-selection saves time on repetitive inbox management'}],
+   learnings:'What this project taught me is that diving deep into one small request often uncovers a much larger problem. The skill isn\'t just spotting those issues, but communicating them clearly to stakeholders and deciding which ones are worth solving now, given time and project constraints.<br><br>Most importantly, this project deepened my understanding that iteration is the work, not an afterthought — there is no perfect design, only one that has been tested, improved, and delivered at the right moment for the user and the business.'},
+
+  {emoji:'🧩',bg:'linear-gradient(135deg,#ECEEF0,#E1E4E7)',
+   title:'Design system: building & managing shared components',
+   subtitle:'Standardising the email, phone, and file-upload components used across 8 France Titres websites.',
+   meta:[{l:'Year',v:'2026'},{l:'Role',v:'UX/UI Designer'},{l:'Tools',v:'Figma'},{l:'Reading time',v:'2 min 30 sec'}],
+   context:'France Titres manages 8 websites serving the general public and professionals. The design team built a shared component library to ensure consistency across all of them, with each designer owning specific components.<br><br>I was responsible for the email address, mobile phone number, and file upload components — chosen because they appear in every user journey across all 8 portals (sign-in, log-in, application forms, contact forms), making them the highest-priority components to standardise first. The work followed Atomic Design methodology.',
+   process:[
+     {n:'01',t:'Audit',d:'Reviewed the portals to identify which components appeared most frequently and mapped their existing states and gaps.'},
+     {n:'02',t:'Design & Iteration',d:'Designed each component across all relevant states (default, error, success), viewports (desktop, mobile), and themes (light, dark), iterating until every variation was production-ready.',compare:[{src:'photos/mail-desktop.png',caption:'Mail — Desktop, 1440px'},{src:'photos/mail-mobile.png',caption:'Mail — Mobile, 320px'}],compareRatio:[3,1],compare2:[{src:'photos/tel-desktop.png',caption:'Tel — Desktop, 1440px'},{src:'photos/tel-mobile.png',caption:'Tel — Mobile, 320px'}],compare2Ratio:[3,1],compare3:[{src:'photos/file-upload-before.png',caption:'File upload — Before'},{src:'photos/file-upload-after.png',caption:'File upload — After'}]},
+     {n:'03',t:'Integration & Testing',d:'Placed components into real user flows to validate their behaviour in context and apply final refinements before handoff.',stack:[{src:'photos/mail-tel-in-flow.png',caption:'Mail & Tel components in a real user flow'},{src:'photos/file-upload-in-flow.png',caption:'File upload component in a real user flow'}]},
+     {n:'04',t:'Documentation & Distribution',d:'Organised all components into the shared design system file with clear documentation for the wider team.'}],
+   resultText:'During one month, I delivered 3 components — about 40 variations in total — used across 8 websites and every user journey involving contact information or document submission.',
+   outcomes:[{n:'3',l:'Components delivered — email, phone, file upload'},{n:'~40',l:'Variations designed across states, viewports & themes'},{n:'8',l:'Websites using the shared components'}],
+   learnings:'I got to know France\'s enriched national design system and worked on this components\' redesign while delivering roughly 40 variations along with their success and error messages. I also learned how to document components properly within a shared design system library in Figma.'},
+
+  {emoji:'🎙️',bg:'linear-gradient(135deg,#FBE4B0,#D8DCDF)',
+   title:'Improving online administrative applications through real users',
+   subtitle:'A 20+ session user-testing campaign to uncover where citizens actually get stuck.',
+   meta:[{l:'Year',v:'2025'},{l:'Role',v:'UX Research'},{l:'Tools',v:'Figma · Video recording'},{l:'Reading time',v:'3 min'}],
+   context:'This project covers a 20+ user-testing campaign run in 2025 to improve our online administrative services. As a UX researcher, my role covered establishing the test protocol, operational execution (receiving interviewees, preparing equipment), and interviewing users or running the script.<br><br>The testers were people who find the digital world difficult, including those in a disability situation. We focused on the "renew an identity card due to expiration" flow, since this journey touches all users and breaks down into other journeys not hosted on our own site.',
+   process:[
+     {n:'01',t:'Scope & Persona Identification',d:'Defined which flow to test and who to test it with.'},
+     {n:'02',t:'Protocol & Test Preparation',d:'Built the test protocol and prepared materials ahead of the sessions.'},
+     {n:'03',t:'Test Days',d:'Ran the sessions in a non-guided format — letting users navigate from A to Z by themselves — to limit researcher bias and observe natural behaviour. Questions combined open-ended prompts with 1–5 rating scales.',photo:'photos/user-testing-session.png',narrowPhoto:true},
+     {n:'04',t:'Analysis & Report',d:'Synthesised the sessions into a report highlighting three key observations to help prioritise future improvements to the site.'}],
+   resultText:'About 20 tests were run, producing qualified insights and a report that helped prioritise upcoming improvements to the site.',
+   outcomes:[{n:'20+',l:'User tests conducted'},{n:'3',l:'Key observations prioritised for the roadmap'}],
+   learnings:'This project gave me valuable experience running non-moderated user testing end to end — from defining the scope to delivering the final report and insights, I got to work through every step of the process myself.'},
+
+  {emoji:'✍️',bg:'linear-gradient(135deg,#ECEEF0,#FBE4B0)',
+   title:'Coc Coc Browser: UX copy that guides users',
+   subtitle:'Writing consistent, bilingual UX copy across a browser used by millions of Vietnamese users.',
+   meta:[{l:'Year',v:'2022 – 2023'},{l:'Role',v:'UX Writer'},{l:'Tools',v:'Figma · Google Docs & Sheets'},{l:'Reading time',v:'3 min'}],
+   context:'Coc Coc Browser is a web browser and search engine built for Vietnamese users, available on desktop, mobile, and TV. As a UX Writer, my mission was to keep content, tone, and voice consistent across every channel — interface, mobile, blogs, and social media — and to write and document UX copy end to end.<br><br>My workflow followed a 6-step design-thinking methodology: understanding users and their pain points, identifying the problem and analysing PO requests, benchmarking and drafting solutions, applying UX copy on Figma mockups, evaluating copy and design through the design team\'s checklist and user testing, and finally delivering completed bilingual docs to developers.',
+   processLabel:'Selected Projects',
+   process:[
+     {n:'01',t:'Mobile Onboarding Redesign',d:'Wrote and localised (Vietnamese to English) the copy presenting Coc Coc Browser\'s 3 main functions and their advantages across 3 onboarding slides.',photo:'photos/coc-coc-mobile-onboarding.png'},
+     {n:'02',t:'Web Onboarding Redesign',d:'The existing web onboarding was outdated, with long, inaccessible messaging. I suggested a hierarchical layout to the UX/UI Designer — a progress bar at the top, animated main content, and one or more interactive buttons at the end — then wrote the microcopy using only the H1 (and a subtitle when necessary), turning vague messaging into direct, suggestive sentences that told users exactly what they could do.',compare:[{src:'photos/coc-coc-web-onboarding-before.png',caption:'Before'},{src:'photos/coc-coc-web-onboarding-after.png',caption:'After'}]},
+     {n:'03',t:'Coc Coc Playlist V1',d:'Coc Coc Playlist collects audio from online sources. I wrote micro-copy in Vietnamese and English across the entire user journey — homepage, modals, and messages — to highlight benefits and suggested actions at every touchpoint, especially the home page.',photo:'photos/coc-coc-playlist.png'}],
+   outcomes:[{n:'3',l:'Products shipped with dedicated UX copy — mobile onboarding, web onboarding, Playlist V1'},{n:'2',l:'Languages written & localised — Vietnamese and English'}],
+   learnings:'Writing UX copy across three very different products taught me how much a clear hierarchy and one well-chosen sentence can do — turning a vague message into something users immediately understand and act on.'},
+
+  {emoji:'🎨',bg:'linear-gradient(135deg,#D8DCDF,#ECEEF0)',
+   title:'UI, graphic & social media design',
+   subtitle:'A collection of interface, graphic, and social media work across accessibility, AR, and branding.',
+   meta:[{l:'Role',v:'UI / Graphic Designer'},{l:'Tools',v:'Figma · Adobe CC · Canva · 8thwall'}],
+   context:'Beyond full case studies, this is a selection of smaller UI and graphic design projects that I have done for the past few years.',
+   hideContextTitle:true,
+   hideProcessTitle:true,
+   process:[
+     {n:'01',t:'Banner for the AI Chatbot',d:'The portal\'s AI Chatbot lives behind a floating button in the bottom-right corner — but screen readers can sometimes override this button, blocking some users from reaching it. My role was to design an entry banner that fixes to and adapts across every page of the portal.',stack:[{src:'photos/chatbot-banner.png',caption:'Banner'},{src:'photos/chatbot-banner-page.png',caption:'On page',narrow:true}]},
+     {n:'02',t:'Results Page Redesign',d:'Redesigned the results page for improved clarity and visual hierarchy.',compare:[{src:'photos/results-before.png',caption:'Before'},{src:'photos/results-after.png',caption:'After'}]},
+     {n:'03',t:'Poster Series',d:'Created interactive posters using 8thwall and Canva — each QR code opens a virtual-reality game.',stack:[{src:'photos/vr-poster.png',caption:'VR Poster',narrow:true},{src:'photos/halloween-poster.png',caption:'Halloween Poster',narrow:true}]},
+     {n:'04',t:'Instagram — Digital Marketing for a Food Brand',d:'Ran a food brand\'s Instagram account (@_doanviet_) for 7 years — creating visuals and videos and running mini-game campaigns to grow followers, covering branding, content marketing, and social network optimisation.'}]}
+];
+
+let cur=0;
+function openCase(i){
+  cur=i;const c=cases[i],p=document.getElementById('cs-page');
+  document.getElementById('cs-nav-title').textContent=c.title.length>42?c.title.slice(0,42)+'…':c.title;
+  const h=document.getElementById('cs-hero');
+  h.style.background=c.bg;
+  h.innerHTML='<span>'+c.emoji+'</span>';
+  document.getElementById('cs-title').textContent=c.title;
+  document.getElementById('cs-subtitle').textContent=c.subtitle;
+  document.getElementById('cs-meta').innerHTML=c.meta.map(m=>'<div class="cs-meta-block"><div class="cs-meta-label">'+m.l+'</div><div class="cs-meta-value">'+m.v+'</div></div>').join('');
+  document.getElementById('cs-context').innerHTML=c.context;
+  document.getElementById('cs-context-title').style.display=c.hideContextTitle?'none':'block';
+  const processTitleEl=document.getElementById('cs-process-title');
+  if(c.hideProcessTitle){processTitleEl.style.display='none';} else {processTitleEl.style.display='block';processTitleEl.textContent=c.processLabel||'Process';}
+
+  // User journey narrative + photo (shown when present, otherwise fall back to problem quote)
+  const journeyBlock=document.getElementById('cs-journey-block');
+  const problemBlock=document.getElementById('cs-problem-block');
+  if(c.userJourney||c.userJourneyPhoto){
+    journeyBlock.style.display='block';
+    problemBlock.style.display='none';
+    const journeyTextEl=document.getElementById('cs-journey-text');
+    if(c.userJourney){journeyTextEl.style.display='block';journeyTextEl.innerHTML=c.userJourney;} else {journeyTextEl.style.display='none';journeyTextEl.innerHTML='';}
+    const journeyPhoto=document.getElementById('cs-journey-photo');
+    if(c.userJourneyPhoto){
+      journeyPhoto.innerHTML='<img src="'+c.userJourneyPhoto+'" alt="User journey" class="cs-single-img" onerror="this.outerHTML=\'<div class=cs-img-placeholder><span>🖼️</span>User journey photo</div>\'">';
+    } else { journeyPhoto.innerHTML=''; }
+    const quotesEl=document.getElementById('cs-user-quotes');
+    if(c.userQuotes&&c.userQuotes.length){
+      quotesEl.innerHTML=c.userQuotes.map(q=>'<p style="font-style:italic;color:var(--text);margin-bottom:8px">'+q+'</p>').join('');
+      quotesEl.style.display='block';
+    } else { quotesEl.style.display='none'; }
+  } else {
+    journeyBlock.style.display='none';
+    problemBlock.style.display=c.problem?'block':'none';
+    if(c.problem)document.getElementById('cs-problem').textContent=c.problem;
+  }
+
+  // Process steps — support bullets, versionNote, versionFeedback, single photo, or side-by-side compare images
+  document.getElementById('cs-process').innerHTML=c.process.map(s=>{
+    let bulletsHtml='';
+    if(s.bullets)bulletsHtml='<ul style="margin:10px auto 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;max-width:700px">'+s.bullets.map(b=>'<li style="font-size:14px;color:var(--muted);line-height:1.7">'+b+'</li>').join('')+'</ul>';
+    let versionHtml='';
+    if(s.versionNote)versionHtml='<p style="font-size:14px;color:var(--muted);margin:14px auto 0;line-height:1.7;max-width:700px">'+s.versionNote+'</p>';
+    if(s.versionFeedback)versionHtml+='<ul style="margin:8px auto 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;max-width:700px">'+s.versionFeedback.map(b=>'<li style="font-size:14px;color:var(--muted);line-height:1.7">'+b+'</li>').join('')+'</ul>';
+    let photoHtml='';
+    if(s.photo)photoHtml='<img src="'+s.photo+'" alt="'+s.t+'" class="cs-single-img'+(s.narrowPhoto?' cs-single-img-narrow':'')+'" onerror="this.outerHTML=\'<div class=cs-img-placeholder><span>🖼️</span>Design screenshot</div>\'">';
+    const renderCompareRow=(imgs,ratio,marginTop)=>{
+      const cols=ratio?ratio.map(r=>r+'fr').join(' '):'repeat('+imgs.length+',1fr)';
+      return '<div class="cs-compare" style="grid-template-columns:'+cols+(marginTop?';margin-top:'+marginTop+'px':'')+'">'+imgs.map(cmp=>'<div class="cs-compare-item"><img src="'+cmp.src+'" alt="'+cmp.caption+'" onerror="this.parentElement.innerHTML=\'<div class=cs-img-placeholder><span>🖼️</span>'+cmp.caption+'</div>\'"><div class="cs-compare-caption">'+cmp.caption+'</div></div>').join('')+'</div>';
+    };
+    if(s.compare)photoHtml+=renderCompareRow(s.compare,s.compareRatio,0);
+    if(s.compare2)photoHtml+=renderCompareRow(s.compare2,s.compare2Ratio,20);
+    if(s.compare3)photoHtml+=renderCompareRow(s.compare3,s.compare3Ratio,20);
+    if(s.stack)photoHtml+='<div class="cs-stack">'+s.stack.map(st=>'<div class="cs-stack-item'+(st.narrow?' cs-stack-item-narrow':'')+'"><img src="'+st.src+'" alt="'+st.caption+'" onerror="this.parentElement.innerHTML=\'<div class=cs-img-placeholder><span>🖼️</span>'+st.caption+'</div>\'"><div class="cs-compare-caption">'+st.caption+'</div></div>').join('')+'</div>';
+    const groupHtml=s.groupTitle?'<div class="cs-group-title">'+s.groupTitle+'</div>':'';
+    return '<div class="cs-step">'+groupHtml+'<span class="cs-step-num">'+s.n+'</span><div class="cs-step-title">'+s.t+'</div><div class="cs-step-desc">'+s.d+'</div>'+bulletsHtml+versionHtml+photoHtml+'</div>';
+  }).join('');
+
+  // Outcomes
+  const outcomesSection=document.getElementById('cs-outcomes-section');
+  if(c.outcomes&&c.outcomes.length){
+    outcomesSection.style.display='block';
+    const resultTextEl=document.getElementById('cs-result-text');
+    resultTextEl.style.display=c.resultText?'block':'none';
+    if(c.resultText)resultTextEl.textContent=c.resultText;
+    const outcomesEl=document.getElementById('cs-outcomes');
+    const cols=c.outcomes.length===2?'repeat(2,1fr)':c.outcomes.length===4?'repeat(2,1fr)':'repeat(3,1fr)';
+    outcomesEl.style.gridTemplateColumns=cols;
+    outcomesEl.innerHTML=c.outcomes.map(o=>'<div class="cs-outcome-card"><div class="cs-outcome-num">'+o.n+'</div><div class="cs-outcome-label">'+o.l+'</div></div>').join('');
+  } else { outcomesSection.style.display='none'; }
+
+  // Learnings — support array or plain string
+  const learningsSection=document.getElementById('cs-learnings-section');
+  if(c.learnings&&c.learnings.length){
+    learningsSection.style.display='block';
+    const learnEl=document.getElementById('cs-learnings');
+    if(Array.isArray(c.learnings)){
+      learnEl.innerHTML=c.learnings.map((l,idx)=>'<p style="color:var(--muted);line-height:1.8;margin:0 auto 14px;max-width:700px"><strong style="color:var(--ink)">'+(idx+1)+'.</strong> '+l+'</p>').join('');
+    } else { learnEl.innerHTML='<p class="cs-text">'+c.learnings+'</p>'; }
+  } else { learningsSection.style.display='none'; }
+
+  const ni=(i+1)%cases.length;
+  document.getElementById('cs-next-title').textContent=cases[ni].title;
+  document.getElementById('cs-next-btn').onclick=()=>openCase(ni);
+  p.style.display='block';
+  document.body.style.overflow='hidden';
+  p.scrollTop=0;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>p.classList.add('visible')));
+}
+function closeCase(){
+  const p=document.getElementById('cs-page');
+  p.classList.remove('visible');
+  setTimeout(()=>{
+    p.style.display='none';
+    document.body.style.overflow='';
+    document.getElementById('work').scrollIntoView({behavior:'smooth',block:'center'});
+  },400);
+}
+function toggleFaq(el){
+  const item=el.parentElement,isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeCase();closeMenu();}});
+</script>
+</body>
+</html>
